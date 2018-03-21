@@ -67,3 +67,5 @@ parameters:
 
     env(MAXMIND_LICENSE_KEY): ''
     env(MAXMIND_USER_ID):     ''
+
+    env(SESSION_TTL): 43200

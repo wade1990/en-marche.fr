@@ -98,6 +98,9 @@
         <service id="app.security.admin_provider" class="AppBundle\Security\UserProvider">
             <argument key="$classOrAlias" type="string">AppBundle\Entity\Administrator</argument>
         </service>
+        <service id="Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider">
+            <argument type="service" id="database_connection"/>
+        </service>
 
         <!-- Timeline -->
         <service id="AppBundle\Command\TimelineImportCommand"/>
