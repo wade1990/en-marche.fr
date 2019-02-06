@@ -32,16 +32,10 @@ Feature:
     When I send a "GET" request to "/api/statistics/search/autocomplete?referent=referent@en-marche-dev.fr&type=committee&value=en"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "committees":[
-        {"508d4ac0-27d6-4635-8953-4cc8600018f9":"En Marche - Comit\u00e9 de Rouen"},
-        {"79638242-5101-11e7-b114-b2f933d5fe66":"En Marche - Suisse"},
-        {"b0cd0e52-a5a4-410b-bba3-37afdd326a0a":"En Marche Dammarie-les-Lys"}
-      ]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | committees[0].508d4ac0-27d6-4635-8953-4cc8600018f9 | En Marche - Comité de Rouen |
+      | committees[1].79638242-5101-11e7-b114-b2f933d5fe66 | En Marche - Suisse          |
+      | committees[2].b0cd0e52-a5a4-410b-bba3-37afdd326a0a | En Marche Dammarie-les-Lys  |
 
     Given I add "Accept" header equal to "application/json"
     And I send a "POST" request to "/oauth/v2/token" with parameters:
@@ -54,17 +48,11 @@ Feature:
     When I send a "GET" request to "/api/statistics/search/autocomplete?referent=referent@en-marche-dev.fr&type=committee&value="
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "committees":[
-        {"d648d486-fbb3-4394-b4b3-016fac3658af":"Antenne En Marche de Fontainebleau"},
-        {"508d4ac0-27d6-4635-8953-4cc8600018f9":"En Marche - Comit\u00e9 de Rouen"},
-        {"79638242-5101-11e7-b114-b2f933d5fe66":"En Marche - Suisse"},
-        {"b0cd0e52-a5a4-410b-bba3-37afdd326a0a":"En Marche Dammarie-les-Lys"}
-      ]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | committees[0].d648d486-fbb3-4394-b4b3-016fac3658af | Antenne En Marche de Fontainebleau |
+      | committees[1].508d4ac0-27d6-4635-8953-4cc8600018f9 | En Marche - Comité de Rouen        |
+      | committees[2].79638242-5101-11e7-b114-b2f933d5fe66 | En Marche - Suisse                 |
+      | committees[3].b0cd0e52-a5a4-410b-bba3-37afdd326a0a | En Marche Dammarie-les-Lys         |
 
     Given I add "Accept" header equal to "application/json"
     And I send a "POST" request to "/oauth/v2/token" with parameters:
@@ -77,12 +65,8 @@ Feature:
     When I send a "GET" request to "/api/statistics/search/autocomplete?referent=referent@en-marche-dev.fr&type=country&value=s"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "countries":[{"CH":"Suisse"}]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | countries[0].CH | Suisse |
 
     Given I add "Accept" header equal to "application/json"
     And I send a "POST" request to "/oauth/v2/token" with parameters:
@@ -97,9 +81,9 @@ Feature:
     And the response should be in JSON
     And the JSON should be equal to:
     """
-    {
-      "countries":[{"ES":"Espagne"},{"CH":"Suisse"}]
-    }
+    And the JSON nodes should be equal to:
+      | countries[0].ES | Espagne |
+      | countries[1].CH | Suisse  |
     """
 
     # Test that search is case insensitive
@@ -114,12 +98,8 @@ Feature:
     When I send a "GET" request to "/api/statistics/search/autocomplete?referent=referent@en-marche-dev.fr&type=city&value=FON"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "cities":["Fontainebleau"]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | cities[0] | Fontainebleau |
 
     Given I add "Accept" header equal to "application/json"
     And I send a "POST" request to "/oauth/v2/token" with parameters:
@@ -132,9 +112,10 @@ Feature:
     When I send a "GET" request to "/api/statistics/search/autocomplete?referent=referent@en-marche-dev.fr&type=city&value="
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "cities":["Dammarie-les-Lys","Fontainebleau","Rouen","Z\u00fcrich","Kilchberg","Marseille 2e"]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | cities[0] | Dammarie-les-Lys |
+      | cities[1] | Fontainebleau    |
+      | cities[2] | Rouen            |
+      | cities[3] | Zürich           |
+      | cities[4] | Kilchberg        |
+      | cities[5] | Marseille 2e     |

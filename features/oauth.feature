@@ -20,13 +20,9 @@ Feature: Using OAuth for 2-legged OAuth flow (client credentials)
     When I am on "/oauth/v2/auth?response_type=code&client_id=-af6d-4ce4-8239-04cfcefd5a19"
     Then the response status code should be 401
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-      {
-        "error":"invalid_client",
-        "message":"Client authentication failed"
-      }
-    """
+    And the JSON nodes should be equal to:
+      | error   | invalid_client               |
+      | message | Client authentication failed |
 
   Scenario: Client credentials authentication
     Given I add "Accept" header equal to "application/json"
@@ -38,14 +34,10 @@ Feature: Using OAuth for 2-legged OAuth flow (client credentials)
       | scope         | read:users                                   |
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "token_type":"Bearer",
-      "expires_in":"@integer@.lowerThan(3601).greaterThan(3595)",
-      "access_token":"@string@"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | token_type   | Bearer                                      |
+      | expires_in   | @integer@.lowerThan(3601).greaterThan(3595) |
+      | access_token | @string@                                    |
 
     When I send a "GET" request to "/oauth/v2/tokeninfo" with the access token
     Then the response status code should be 200
@@ -65,14 +57,10 @@ Feature: Using OAuth for 2-legged OAuth flow (client credentials)
     When I send a "GET" request to "/api/me"
     Then the response status code should be 401
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "error": "access_denied",
-      "message": "The resource owner or authorization server denied the request.",
-      "hint": "API user does not have access to this route"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | error   | access_denied                                                  |
+      | message | The resource owner or authorization server denied the request. |
+      | hint    | API user does not have access to this route                    |
 
   Scenario: Grant type not allowed
     Given I add "Accept" header equal to "application/json"
@@ -83,13 +71,9 @@ Feature: Using OAuth for 2-legged OAuth flow (client credentials)
       | grant_type    | client_credentials                                 |
     Then the response should be in JSON
     And the response status code should be 401
-    And the JSON should be equal to:
-    """
-    {
-      "error":"invalid_client",
-      "message":"Client authentication failed"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | error   | invalid_client               |
+      | message | Client authentication failed |
 
   Scenario: Scope is not allowed for this client
     Given I add "Accept" header equal to "application/json"
@@ -101,25 +85,17 @@ Feature: Using OAuth for 2-legged OAuth flow (client credentials)
       | scope         | read:users write:users                       |
     Then the response status code should be 400
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "error":"invalid_scope",
-      "message":"The requested scope is invalid, unknown, or malformed",
-      "hint":"Check the `write:users` scope"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | error   | invalid_scope                                         |
+      | message | The requested scope is invalid, unknown, or malformed |
+      | hint    | Check the `write:users` scope                         |
 
   Scenario: Tokeninfo for invalid token
     When I send a "GET" request to "/oauth/v2/tokeninfo"
     Then the response should be in JSON
     And the response status code should be 400
-    And the JSON should be equal to:
-    """
-    {
-      "message": "No access_token provided"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | message | No access_token provided |
 
   Scenario: Register a user with callback URI
     Given I am on "/inscription-utilisateur?client_id=f80ce2df-af6d-4ce4-8239-04cfcefd5a19&redirect_uri=https%3A%2F%2Fen-marche.fr%2Fcallback"

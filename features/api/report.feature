@@ -19,15 +19,11 @@ Feature:
     And I send a "GET" request to "/api/report/reasons"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "intellectual_property": "Le contenu porte atteinte aux droits de propriété intellectuelle",
-      "illicit_content": "C'est un contenu manifestement illicite ou choquant",
-      "commercial_content": "Il s'agit de contenu commercial",
-      "other": "Autre"
-    }
-    """
+    And the JSON nodes should be equal to:
+      | intellectual_property | Le contenu porte atteinte aux droits de propriété intellectuelle |
+      | illicit_content       | C'est un contenu manifestement illicite ou choquant              |
+      | commercial_content    | Il s'agit de contenu commercial                                  |
+      | other                 | Autre                                                            |
 
   Scenario: As a logged-in user I can post a report
     When I am logged as "jacques.picard@en-marche.fr"
@@ -61,20 +57,12 @@ Feature:
     """
     Then the response status code should be 400
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "type": "@string@.isUrl()",
-      "title": "An error occurred",
-      "detail": "comment: Vous devez cocher la case \"Autre\" afin de renseigner un commentaire.",
-      "violations":[
-        {
-          "propertyPath": "comment",
-          "message": "Vous devez cocher la case \"Autre\" afin de renseigner un commentaire."
-        }
-      ]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | type                       | @string@.isUrl()                                                              |
+      | title                      | An error occurred                                                             |
+      | detail                     | comment: Vous devez cocher la case "Autre" afin de renseigner un commentaire. |
+      | violations[0].propertyPath | comment                                                                       |
+      | violations[0].message      | Vous devez cocher la case "Autre" afin de renseigner un commentaire.          |
 
   Scenario: As a logged-in user I can not post a report with no reason
     When I am logged as "jacques.picard@en-marche.fr"
@@ -86,20 +74,12 @@ Feature:
     """
     Then the response status code should be 400
     And the response should be in JSON
-    And the JSON should be equal to:
-    """
-    {
-      "type": "@string@.isUrl()",
-      "title": "An error occurred",
-      "detail": "reasons: Afin de valider votre signalement, veuillez sélectionner au moins une raison.",
-      "violations":[
-        {
-          "propertyPath": "reasons",
-          "message": "Afin de valider votre signalement, veuillez sélectionner au moins une raison."
-        }
-      ]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | type                       | @string@.isUrl()                                                                       |
+      | title                      | An error occurred                                                                      |
+      | detail                     | reasons: Afin de valider votre signalement, veuillez sélectionner au moins une raison. |
+      | violations[0].propertyPath | reasons                                                                                |
+      | violations[0].message      | Afin de valider votre signalement, veuillez sélectionner au moins une raison.          |
 
   Scenario: As a logged-in user I can post a report
     When I am logged as "jacques.picard@en-marche.fr"

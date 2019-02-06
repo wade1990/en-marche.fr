@@ -21,13 +21,8 @@ Feature: Allow some worker to get the list of configured web hooks
     When I send a "GET" request to "/api/webhooks/user.created"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON should be equal to:
-    """
-    {
-      "event":"user.created",
-      "callbacks":[]
-    }
-    """
+    And the JSON nodes should be equal to:
+      | event | user.created |
 
   Scenario: Web hook config can be read when oauth client have web_hook scope (web hook already in DB)
     Given I send a "POST" request to "/oauth/v2/token" with parameters:
@@ -41,13 +36,8 @@ Feature: Allow some worker to get the list of configured web hooks
     When I send a "GET" request to "/api/webhooks/user.deleted"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON should be equal to:
-    """
-    {
-      "event":"user.deleted",
-      "callbacks":{"http://test.com/awesome":[],"https://www.en-marche.fr/webhook/endpoint":[]}
-    }
-    """
+    And the JSON nodes should be equal to:
+      | event | user.deleted |
 
     Given I send a "POST" request to "/oauth/v2/token" with parameters:
       | key           | value                                        |
@@ -60,19 +50,9 @@ Feature: Allow some worker to get the list of configured web hooks
     When I send a "GET" request to "/api/webhooks/user.updated"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON should be equal to:
-    """
-    {
-      "event":"user.updated",
-      "callbacks":{
-        "http://test.com/awesome":[],
-        "https://www.en-marche.fr/webhook/endpoint":[],
-        "https://api.mailchimp.com/lists":{
-          "services":"mailchimp"
-        }
-      }
-    }
-    """
+    And the JSON nodes should be equal to:
+      | event                                              | user.updated |
+      | callbacks.https://api.mailchimp.com/lists.services | mailchimp    |
 
     Given I send a "POST" request to "/oauth/v2/token" with parameters:
       | key           | value                                        |
@@ -85,13 +65,9 @@ Feature: Allow some worker to get the list of configured web hooks
     When I send a "GET" request to "/api/webhooks/user.update_subscriptions"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON should be equal to:
-    """
-    {
-      "event":"user.update_subscriptions",
-      "callbacks":{"https://api.mailchimp.com/lists":{"services":"mailchimp"}}
-    }
-    """
+    And the JSON nodes should be equal to:
+      | event                                              | user.update_subscriptions |
+      | callbacks.https://api.mailchimp.com/lists.services | mailchimp                 |
 
   Scenario: It forbids access when OAuth client does not have web_hook scope or if user is anonymous
     When I send a "GET" request to "/api/webhooks/user.created"
