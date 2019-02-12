@@ -29,7 +29,7 @@ default:
                 class: AppKernel
                 env: test
         Behat\MinkExtension:
-            base_url: "http://test.enmarche.code"
+            base_url: "http://127.0.0.1"
             sessions:
                 default:
                     symfony2: ~
