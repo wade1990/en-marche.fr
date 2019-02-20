@@ -10,6 +10,7 @@
 /var/
 /vendor/
 /web/bundles/
+/web/select2/
 /web/built/
 /web/js/jquery.collection.js
 /.tmp
