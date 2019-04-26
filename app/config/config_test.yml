@@ -135,3 +135,7 @@ api_platform:
     collection:
         pagination:
             items_per_page: 2
+
+liip_functional_test:
+    query:
+        max_query_count: 10
