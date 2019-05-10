@@ -78,5 +78,5 @@ services:
         arguments: [[]]
 
     AppBundle\Messenger\:
-        resource: '../../../src/Messenger/*'
-        exclude: '../../../src/Messenger/{Message}'
+        resource: '../../src/Messenger/*'
+        exclude: '../../src/Messenger/{Message}'

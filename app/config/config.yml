@@ -38,9 +38,6 @@ parameters:
 framework:
     translator:      { fallbacks: ["%locale%"], paths: ["%kernel.project_dir%/translations"] }
     secret:          "%env(SECRET)%"
-    router:
-        resource: "%kernel.root_dir%/config/routing.yml"
-        strict_requirements: ~
     form:            ~
     csrf_protection: ~
     validation:      { enable_annotations: true }
@@ -355,9 +352,9 @@ old_sound_rabbit_mq:
 
 knp_snappy:
     pdf:
-        binary: "%kernel.root_dir%/../vendor/bin/wkhtmltopdf-amd64"
+        binary: "%kernel.project_dir%/vendor/bin/wkhtmltopdf-amd64"
     image:
-        binary: "%kernel.root_dir%/../vendor/bin/wkhtmltoimage-amd64"
+        binary: "%kernel.project_dir%/vendor/bin/wkhtmltoimage-amd64"
 
 exercise_html_purifier:
     default:
