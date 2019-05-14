@@ -11,6 +11,7 @@ import progressiveBackground from './listeners/progressive-background';
 import externalLinks from './listeners/external-links';
 import noJsRecaptcha from './listeners/no-js-recaptcha';
 import alogliaSearch from './listeners/algolia-search';
+import createCKEditorWithUpload from "./services/form/CKEditor";
 
 class App {
     constructor() {
@@ -81,12 +82,6 @@ class App {
     runDonationInformations(formType) {
         System.import('pages/donation_informations').catch((error) => { throw error; }).then((module) => {
             module.default(formType);
-        });
-    }
-
-    runOrganisation() {
-        System.import('pages/organisation').catch((error) => { throw error; }).then((module) => {
-            module.default(this.get('map_factory'), this.get('api'));
         });
     }
 
@@ -245,6 +240,10 @@ class App {
         System.import('pages/assessor_manager_vote_places').catch((error) => { throw error; }).then((module) => {
             module.default(queryString, totalCount, perPage, this.get('api'));
         });
+    }
+
+    createCKEditor(elementSelector, uploadUrl) {
+        createCKEditorWithUpload(find(document, elementSelector), uploadUrl);
     }
 }
 

@@ -12,6 +12,7 @@
     "lint:watch": "npm run lint -- --watch"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-en-marche": "https://github.com/EnMarche/ckeditor5-build-classic#e6b419fdaa05c250de8411255a88596772f80f84",
     "@google/markerclusterer": "^1.0.3",
     "@mapbox/polylabel": "^1.0.2",
     "algoliasearch": "^3.22.1",
