@@ -84,12 +84,6 @@ class App {
         });
     }
 
-    runOrganisation() {
-        System.import('pages/organisation').catch((error) => { throw error; }).then((module) => {
-            module.default(this.get('map_factory'), this.get('api'));
-        });
-    }
-
     runReport() {
         System.import('pages/report').catch((error) => { throw error; }).then((module) => {
             module.default();
