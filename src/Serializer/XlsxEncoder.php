@@ -17,6 +17,8 @@ class XlsxEncoder implements EncoderInterface
             throw new \InvalidArgumentException('This method requires an array of data');
         }
 
+        $data = $this->prepareData($data);
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $headers = [];
@@ -69,5 +71,33 @@ class XlsxEncoder implements EncoderInterface
         }
 
         return $result;
+    }
+
+    private function prepareData(array $data): array
+    {
+        $newData = [];
+
+        foreach ($data as $row) {
+            $newData[] = $this->flattenArray('', $row);
+        }
+
+        return $newData;
+    }
+
+    private function flattenArray(string $prefix, array $data): array
+    {
+        $newData = [];
+
+        foreach ($data as $key => $value) {
+            $label = ($prefix ? $prefix.'.' : '').$key;
+
+            if (\is_array($value)) {
+                $newData += $this->flattenArray($label, $value);
+            } else {
+                $newData[$label] = $value;
+            }
+        }
+
+        return $newData;
     }
 }
