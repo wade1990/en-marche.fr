@@ -65,7 +65,6 @@ class ReferentManagedUserRepository extends ServiceEntityRepository
         $qb
             ->where('u.status = :status')
             ->setParameter('status', ReferentManagedUser::STATUS_READY)
-            ->orderBy('u.createdAt', 'DESC')
         ;
 
         if ($onlyEmailSubscribers) {
@@ -225,6 +224,19 @@ class ReferentManagedUserRepository extends ServiceEntityRepository
                 ->setParameter('isMailSubscriber', $filter->onlyEmailSubscribers())
             ;
         }
+
+        $orderColumn = 'createdAt';
+        $orderSens = 'DESC';
+
+        if (($order = $filter->getOrder()) && $order === 'lastName') {
+            $orderColumn = $order;
+        }
+
+        if ($sens = $filter->getOrderSens()) {
+            $orderSens = $sens === 'd' ? 'DESC' : 'ASC';
+        }
+
+        $qb->orderBy("u.$orderColumn", $orderSens);
 
         return $qb;
     }
