@@ -7,6 +7,10 @@
             + Nouveau message
         </a>
 
+        <a href="{{ path("app_message_#{message_type}_contact_list_show", route_params|default({})) }}" class="btn-type-table">
+            Voir ma liste des cantacts
+        </a>
+
         {% if total_message_count %}
             <span class="datagrid__count">
                 <span>{{ messages.totalItems|number_format(0, ',', ' ') }}</span> sur {{ total_message_count|number_format(0, ',', ' ') }} résultat{{ total_message_count > 1 ? 's' : '' }}

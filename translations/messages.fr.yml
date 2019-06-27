@@ -539,8 +539,10 @@ adherent_message.referent: Message référent
 adherent_message.deputy: Message député
 adherent_message.host: Message co-animateur
 adherent_message.supervisor: Message animateur
+adherent_message.contact_list.created_successfully: 'Votre liste a bien été créée.'
 draft: Brouillon
 sent: Envoyé
+
 
 #
 # Ideas Workshop

@@ -1,0 +1,16 @@
+{% extends 'message/_layout.html.twig' %}
+
+{% block messages_main_block %}
+    <div class="">
+        {% if list %}
+
+        {% esle %}
+            <div>
+                <img src="{{ asset('/images/icons/icn_no-result.svg') }}" class="icn--no-result" width="30" />
+                Vous n'avez aucune list
+                <br>
+                <a href="{{ path('app_message_common_contact_list_create') }}" class="btn btn--blue btn--large-and-full b__nudge--top">+ créer une liste</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

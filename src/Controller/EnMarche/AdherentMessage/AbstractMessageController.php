@@ -12,6 +12,7 @@ use AppBundle\Entity\Adherent;
 use AppBundle\Entity\AdherentMessage\AbstractAdherentMessage;
 use AppBundle\Form\AdherentMessage\AdherentMessageType;
 use AppBundle\Mailchimp\Manager;
+use AppBundle\Repository\AdherentMessageContactListRepository;
 use AppBundle\Repository\AdherentMessageRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -253,6 +254,18 @@ abstract class AbstractMessageController extends Controller
         }
 
         return $this->redirectToMessageRoute('preview', ['uuid' => $message->getUuid()->toString()]);
+    }
+
+    /**
+     * @Route("/contact-liste", name="contact_list_show", methods={"GET"})
+     *
+     * @param Adherent|UserInterface $adherent
+     */
+    public function contactListShowAction(UserInterface $adherent, AdherentMessageContactListRepository $repository): Response
+    {
+        return $this->renderTemplate('message/contact_list/show_list.html.twig', [
+            'list' => $repository->findOneByOwner($adherent)
+        ]);
     }
 
     abstract protected function getMessageType(): string;
