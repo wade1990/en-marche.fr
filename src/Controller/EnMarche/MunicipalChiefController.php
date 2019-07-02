@@ -2,15 +2,24 @@
 
 namespace AppBundle\Controller\EnMarche;
 
+use AppBundle\Address\GeoCoder;
 use AppBundle\Controller\CanaryControllerTrait;
+use AppBundle\Entity\Adherent;
 use AppBundle\Entity\ApplicationRequest\ApplicationRequest;
 use AppBundle\Entity\ApplicationRequest\RunningMateRequest;
 use AppBundle\Entity\ApplicationRequest\VolunteerRequest;
 use AppBundle\Entity\MunicipalChiefManagedArea;
+use AppBundle\Event\EventCommand;
+use AppBundle\Event\EventCommandHandler;
+use AppBundle\Event\EventRegistrationCommand;
+use AppBundle\Event\EventRegistrationCommandHandler;
 use AppBundle\Form\ApplicationRequest\ApplicationRequestTagsType;
+use AppBundle\Form\EventCommandType;
+use AppBundle\Referent\ManagedEventsExporter;
 use AppBundle\Repository\AdherentRepository;
 use AppBundle\Repository\ApplicationRequest\RunningMateRequestRepository;
 use AppBundle\Repository\ApplicationRequest\VolunteerRequestRepository;
+use AppBundle\Repository\EventRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -260,6 +269,53 @@ class MunicipalChiefController extends Controller
         );
     }
 
+    /**
+     * @Route("/evenements", name="events", methods={"GET"})
+     */
+    public function eventsAction(EventRepository $eventRepository, ManagedEventsExporter $eventsExporter): Response
+    {
+        return $this->render('municipal_chief/events_list.html.twig', [
+            'managedEventsJson' => $eventsExporter->exportAsJson(
+                $eventRepository->findEventsByOrganizer($this->getUser())
+            ),
+        ]);
+    }
+
+    /**
+     * @Route("/evenements/creer", name="events_create", methods={"GET", "POST"})
+     */
+    public function eventsCreateAction(
+        Request $request,
+        GeoCoder $geoCoder,
+        EventCommandHandler $eventCommandHandler,
+        EventRegistrationCommandHandler $eventRegistrationCommandHandler,
+        UserInterface $user
+    ): Response {
+        /** @var Adherent $user */
+        $command = new EventCommand($user);
+        $command->setTimeZone($geoCoder->getTimezoneFromIp($request->getClientIp()));
+
+        $form = $this->createForm(EventCommandType::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event = $eventCommandHandler->handle($command);
+
+            $registrationCommand = new EventRegistrationCommand($event, $this->getUser());
+            $eventRegistrationCommandHandler->handle($registrationCommand);
+
+            $this->addFlash('success', true);
+
+            return $this->render('municipal_chief/event_create.html.twig', [
+                'event' => $event,
+            ]);
+        }
+
+        return $this->render('municipal_chief/event_create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     private function addToTeam(
         ObjectManager $objectManager,
         ApplicationRequest $applicationRequest,
@@ -318,11 +374,12 @@ class MunicipalChiefController extends Controller
         AdherentRepository $adherentRepository
     ): Response {
         $this->disableInProduction();
-        $inseeCodes = $municipalChief->getMunicipalChiefManagedArea()->getCodes();
-        $paginator = $adherentRepository->findPaginatedForInseeCodes($inseeCodes, $request->query->getInt('page'));
 
         return $this->render('municipal_chief/adherent/list.html.twig', [
-            'results' => $paginator,
+            'results' => $adherentRepository->findPaginatedForInseeCodes(
+                $municipalChief->getMunicipalChiefManagedArea()->getCodes(),
+                $request->query->getInt('page')
+            ),
         ]);
     }
 }

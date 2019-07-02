@@ -1,8 +1,8 @@
 {% extends 'events/_layout.html.twig' %}
 
-{% block page_title "Invitation pour #{committee_event.name} - #{committee_event.cityName}, #{committee_event.beginAt|date('d/m/Y')}" %}
-{% block canonical_url url('app_event_invite', { slug: committee_event.slug }) %}
-{% block meta_description "Envoyer une invitation pour #{committee_event.name} qui est un événement local du mouvement La République En Marche ! organisé par #{committee_event.organizer} le #{committee_event.beginAt|date('d/m/Y')} à #{committee_event.beginAt|date('G\\hi')}, dans la ville de #{committee_event.cityName}." %}
+{% block page_title "Invitation pour #{event.name} - #{event.cityName}, #{event.beginAt|date('d/m/Y')}" %}
+{% block canonical_url url('app_event_invite', { slug: event.slug }) %}
+{% block meta_description "Envoyer une invitation pour #{event.name} qui est un événement local du mouvement La République En Marche ! organisé par #{event.organizer} le #{event.beginAt|date('d/m/Y')} à #{event.beginAt|date('G\\hi')}, dans la ville de #{event.cityName}." %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -11,7 +11,7 @@
 
 {% block event_name %}
     <h1 class="committee-event-name text--large b__nudge--bottom">
-        Invitation pour {{ committee_event.name }} - {{ committee_event.cityName }}, {{ committee_event.beginAt|date('d/m/Y') }}
+        Invitation pour {{ event.name }} - {{ event.cityName }}, {{ event.beginAt|date('d/m/Y') }}
     </h1>
 {% endblock %}
 
@@ -64,6 +64,13 @@
                     <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}" style="margin: 10px auto 50px auto;"></div>
                 {% elseif app.debug %}
                     <input type="hidden" name="g-recaptcha-response" value="fake" />
+                {% endif %}
+
+                {% if event.status== constant('STATUS_SCHEDULED', event) %}
+                    <div class="alert alert-warning">
+                        Votre événement est bien créé mais pas encore diffusé.<br/>
+                        Partagez le par e-mail à vos contacts en cliquant ci-dessous.
+                    </div>
                 {% endif %}
 
                 {{ form_end(invitation_form) }}
